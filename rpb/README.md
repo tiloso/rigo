@@ -4,3 +4,4 @@
 regenerate *.pg.go files with
   `protoc --go_out=. riak.proto`
   `protoc --go_out=. riak_kv.proto`
+  `protoc --go_out=. riak_dt.proto`

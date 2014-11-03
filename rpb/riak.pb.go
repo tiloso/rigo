@@ -23,7 +23,7 @@ It has these top-level messages:
 	RpbBucketProps
 	RpbAuthReq
 */
-package riak
+package rpb
 
 import proto "code.google.com/p/goprotobuf/proto"
 import math "math"

@@ -34,11 +34,10 @@ It has these top-level messages:
 	RpbCounterGetReq
 	RpbCounterGetResp
 */
-package riak_kv
+package rpb
 
 import proto "code.google.com/p/goprotobuf/proto"
 import math "math"
-import riak "riak.pb"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -842,11 +841,11 @@ func (m *RpbIndexReq) GetPaginationSort() bool {
 
 // Secondary Index query response
 type RpbIndexResp struct {
-	Keys             [][]byte        `protobuf:"bytes,1,rep,name=keys" json:"keys,omitempty"`
-	Results          []*riak.RpbPair `protobuf:"bytes,2,rep,name=results" json:"results,omitempty"`
-	Continuation     []byte          `protobuf:"bytes,3,opt,name=continuation" json:"continuation,omitempty"`
-	Done             *bool           `protobuf:"varint,4,opt,name=done" json:"done,omitempty"`
-	XXX_unrecognized []byte          `json:"-"`
+	Keys             [][]byte   `protobuf:"bytes,1,rep,name=keys" json:"keys,omitempty"`
+	Results          []*RpbPair `protobuf:"bytes,2,rep,name=results" json:"results,omitempty"`
+	Continuation     []byte     `protobuf:"bytes,3,opt,name=continuation" json:"continuation,omitempty"`
+	Done             *bool      `protobuf:"varint,4,opt,name=done" json:"done,omitempty"`
+	XXX_unrecognized []byte     `json:"-"`
 }
 
 func (m *RpbIndexResp) Reset()         { *m = RpbIndexResp{} }
@@ -860,7 +859,7 @@ func (m *RpbIndexResp) GetKeys() [][]byte {
 	return nil
 }
 
-func (m *RpbIndexResp) GetResults() []*riak.RpbPair {
+func (m *RpbIndexResp) GetResults() []*RpbPair {
 	if m != nil {
 		return m.Results
 	}
@@ -1027,18 +1026,18 @@ func (m *RpbIndexObject) GetObject() *RpbGetResp {
 // Content message included in get/put responses
 // Holds the value and associated metadata
 type RpbContent struct {
-	Value            []byte          `protobuf:"bytes,1,req,name=value" json:"value,omitempty"`
-	ContentType      []byte          `protobuf:"bytes,2,opt,name=content_type" json:"content_type,omitempty"`
-	Charset          []byte          `protobuf:"bytes,3,opt,name=charset" json:"charset,omitempty"`
-	ContentEncoding  []byte          `protobuf:"bytes,4,opt,name=content_encoding" json:"content_encoding,omitempty"`
-	Vtag             []byte          `protobuf:"bytes,5,opt,name=vtag" json:"vtag,omitempty"`
-	Links            []*RpbLink      `protobuf:"bytes,6,rep,name=links" json:"links,omitempty"`
-	LastMod          *uint32         `protobuf:"varint,7,opt,name=last_mod" json:"last_mod,omitempty"`
-	LastModUsecs     *uint32         `protobuf:"varint,8,opt,name=last_mod_usecs" json:"last_mod_usecs,omitempty"`
-	Usermeta         []*riak.RpbPair `protobuf:"bytes,9,rep,name=usermeta" json:"usermeta,omitempty"`
-	Indexes          []*riak.RpbPair `protobuf:"bytes,10,rep,name=indexes" json:"indexes,omitempty"`
-	Deleted          *bool           `protobuf:"varint,11,opt,name=deleted" json:"deleted,omitempty"`
-	XXX_unrecognized []byte          `json:"-"`
+	Value            []byte     `protobuf:"bytes,1,req,name=value" json:"value,omitempty"`
+	ContentType      []byte     `protobuf:"bytes,2,opt,name=content_type" json:"content_type,omitempty"`
+	Charset          []byte     `protobuf:"bytes,3,opt,name=charset" json:"charset,omitempty"`
+	ContentEncoding  []byte     `protobuf:"bytes,4,opt,name=content_encoding" json:"content_encoding,omitempty"`
+	Vtag             []byte     `protobuf:"bytes,5,opt,name=vtag" json:"vtag,omitempty"`
+	Links            []*RpbLink `protobuf:"bytes,6,rep,name=links" json:"links,omitempty"`
+	LastMod          *uint32    `protobuf:"varint,7,opt,name=last_mod" json:"last_mod,omitempty"`
+	LastModUsecs     *uint32    `protobuf:"varint,8,opt,name=last_mod_usecs" json:"last_mod_usecs,omitempty"`
+	Usermeta         []*RpbPair `protobuf:"bytes,9,rep,name=usermeta" json:"usermeta,omitempty"`
+	Indexes          []*RpbPair `protobuf:"bytes,10,rep,name=indexes" json:"indexes,omitempty"`
+	Deleted          *bool      `protobuf:"varint,11,opt,name=deleted" json:"deleted,omitempty"`
+	XXX_unrecognized []byte     `json:"-"`
 }
 
 func (m *RpbContent) Reset()         { *m = RpbContent{} }
@@ -1101,14 +1100,14 @@ func (m *RpbContent) GetLastModUsecs() uint32 {
 	return 0
 }
 
-func (m *RpbContent) GetUsermeta() []*riak.RpbPair {
+func (m *RpbContent) GetUsermeta() []*RpbPair {
 	if m != nil {
 		return m.Usermeta
 	}
 	return nil
 }
 
-func (m *RpbContent) GetIndexes() []*riak.RpbPair {
+func (m *RpbContent) GetIndexes() []*RpbPair {
 	if m != nil {
 		return m.Indexes
 	}

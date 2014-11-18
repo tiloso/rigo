@@ -12,7 +12,7 @@ type Object struct {
 	vclock          []byte
 	contentType     []byte
 	contentEncoding []byte
-	indexes         []*rpb.RpbPair
+	indexes         []KVPair
 }
 
 // type ObjectSetter func(*Object) *Object
@@ -22,7 +22,7 @@ func (o *Object) Vclock(v []byte) *Object {
 	return o
 }
 
-func (o *Object) Indexes(v []*rpb.RpbPair) *Object {
+func (o *Object) Indexes(v []KVPair) *Object {
 	o.indexes = v
 	return o
 }
@@ -64,6 +64,14 @@ func (o *Object) Get() (*rpb.RpbGetResp, error) {
 }
 
 func (o *Object) Store(dt []byte) (*rpb.RpbPutResp, error) {
+	rpbPairs := make([]*rpb.RpbPair, len(o.indexes))
+	for i, v := range o.indexes {
+		rpbPairs[i] = &rpb.RpbPair{
+			Key:   v.Key,
+			Value: v.Value,
+		}
+	}
+
 	rpbReq := &rpb.RpbPutReq{
 		Bucket: o.bucket,
 		Type:   o.typ,
@@ -73,7 +81,7 @@ func (o *Object) Store(dt []byte) (*rpb.RpbPutResp, error) {
 			Value:           dt,
 			ContentType:     o.contentType,
 			ContentEncoding: o.contentEncoding,
-			Indexes:         o.indexes,
+			Indexes:         rpbPairs,
 		},
 	}
 

@@ -3,18 +3,7 @@ package rigo
 import (
 	"encoding/json"
 	"reflect"
-
-	"github.com/tiloso/rigo/rpb"
 )
-
-// v := []KVI{&testObjs{}}
-// B("abc").K("nexus").GetI(v)
-// B("abc").StoreI(v)
-// B"abc").DeleteI(v)
-
-// B("abc").K("nexus").GetKVI(v)
-// B("abc").StoreKVI(v)
-// B"abc").DeleteKVI(v)
 
 // type KeyVclockIndexer
 type KVIer interface {
@@ -22,10 +11,14 @@ type KVIer interface {
 	SetKey([]byte)
 	Vclock() []byte
 	SetVclock([]byte)
-	Indexes() []*rpb.RpbPair
+	Indexes() []KVPair
 }
 
-func (o *Object) GetKVI(v []KVIer) error {
+type KVPair struct {
+	Key, Value []byte
+}
+
+func (o *Object) GetKVI(v interface{}) error {
 	resultv := reflect.ValueOf(v)
 	if resultv.Kind() != reflect.Ptr || resultv.Elem().Kind() != reflect.Slice {
 		panic("obj argument must be a slice address")

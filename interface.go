@@ -5,8 +5,8 @@ import (
 	"reflect"
 )
 
-// type KeyVclockIndexer
-type KVIer interface {
+// ObjectInterface instead?
+type Interface interface {
 	Key() []byte
 	SetKey([]byte)
 	Vclock() []byte
@@ -18,7 +18,7 @@ type KVPair struct {
 	Key, Value []byte
 }
 
-func (o *Object) GetKVI(v interface{}) error {
+func (o *Object) GetI(v interface{}) error {
 	resultv := reflect.ValueOf(v)
 	if resultv.Kind() != reflect.Ptr || resultv.Elem().Kind() != reflect.Slice {
 		panic("obj argument must be a slice address")
@@ -45,7 +45,7 @@ func (o *Object) GetKVI(v interface{}) error {
 			}
 		}
 
-		kv, ok := elemp.Interface().(KVIer)
+		kv, ok := elemp.Interface().(Interface)
 		if ok {
 			kv.SetKey(o.key)
 			kv.SetVclock(rpbRes.GetVclock())
@@ -57,11 +57,11 @@ func (o *Object) GetKVI(v interface{}) error {
 	return nil
 }
 
-func (b *Bucket) DeleteKVI(v KVIer) error {
+func (b *Bucket) DeleteI(v Interface) error {
 	return b.K(v.Key()).Vclock(v.Vclock()).Delete()
 }
 
-func (b *Bucket) StoreKVI(v KVIer) error {
+func (b *Bucket) StoreI(v Interface) error {
 	om, err := json.Marshal(v)
 	if err != nil {
 		return err

@@ -140,7 +140,7 @@ func TestDial2(t *testing.T) {
 func TestGetNotFound(t *testing.T) {
 	key := []byte("not-existent")
 	var objs []*testObj
-	if err := client.T(typeName).B(bucketName).K(key).GetKVI(&objs); err != nil {
+	if err := client.T(typeName).B(bucketName).K(key).GetI(&objs); err != nil {
 		t.Skipf("err get: %v", err)
 	}
 
@@ -432,16 +432,16 @@ func Example() {
 		key:  key,
 		Name: "nexus",
 	}
-	if err := c.T(bType).B(bucket).StoreKVI(o); err != nil {
+	if err := c.T(bType).B(bucket).StoreI(o); err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
 
-	if err := rgBucket.StoreKVI(o); err != nil {
+	if err := rgBucket.StoreI(o); err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
 
 	v := []*testObj{&testObj{}}
-	if err := rgBucket.K(key).GetKVI(v); err != nil {
+	if err := rgBucket.K(key).GetI(v); err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
 

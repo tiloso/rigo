@@ -14,6 +14,11 @@ func (t *Type) B(v []byte) *Bucket {
 	}
 }
 
+// create a more generic stream and batch / all query types
+// e.g. bucket.keys / type.buckets / client.buckets => all <= [][]byte, err / Stream <= chans
+
+// we basically only have two / three different types of queries => Store, Delete, Get and
+// Keys, buckets, index.range, index.key
 func (t *Type) Buckets() (<-chan []byte, <-chan error) {
 	dc := make(chan []byte)
 	ec := make(chan error)

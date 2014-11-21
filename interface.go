@@ -2,6 +2,7 @@ package rigo
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 )
 
@@ -31,6 +32,9 @@ func (o *Object) GetI(v interface{}) error {
 	if err != nil {
 		return err
 	}
+	// TODO
+	// test if elemp.Elem().Interface() satisfices Interface interface first!
+	// return err / panic else
 
 	// method used by rgo might improve performance
 	// (set elemv at index of slicev, append and set len == cap if index > len)
@@ -45,11 +49,13 @@ func (o *Object) GetI(v interface{}) error {
 			}
 		}
 
-		kv, ok := elemp.Interface().(Interface)
-		if ok {
-			kv.SetKey(o.key)
-			kv.SetVclock(rpbRes.GetVclock())
+		kv, ok := elemp.Elem().Interface().(Interface)
+		if !ok {
+			return errors.New("slice element doesn't implement interface rigo.Interface")
 		}
+
+		kv.SetKey(o.key)
+		kv.SetVclock(rpbRes.GetVclock())
 
 		slicev = reflect.Append(slicev, elemp.Elem())
 	}

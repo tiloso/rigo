@@ -15,7 +15,10 @@ func (b *Bucket) K(v []byte) *Object {
 }
 
 func (b *Bucket) I(v []byte) *Index {
-	return &Index{b, v}
+	return &Index{
+		Bucket: b,
+		index:  v,
+	}
 }
 
 func (b *Bucket) Keys() (<-chan []byte, <-chan error) {

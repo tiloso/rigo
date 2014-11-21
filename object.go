@@ -13,10 +13,20 @@ type Object struct {
 	contentType     []byte
 	contentEncoding []byte
 	indexes         []KVPair
+	timeout         *uint32
+	ifModified      []byte
+	head            *bool
+}
+
+func (o *Object) setHead(v bool) {
+	o.head = &v
+}
+
+func (o *Object) setIfModified(v []byte) {
+	o.ifModified = v
 }
 
 // type ObjectSetter func(*Object) *Object
-
 func (o *Object) Vclock(v []byte) *Object {
 	o.vclock = v
 	return o
@@ -37,11 +47,21 @@ func (o *Object) ContentEncoding(v []byte) *Object {
 	return o
 }
 
+func (o *Object) Option(opts ...option) *Object {
+	for _, opt := range opts {
+		opt(o)
+	}
+	return o
+}
+
 func (o *Object) Get() (*rpb.RpbGetResp, error) {
 	rpbReq := &rpb.RpbGetReq{
-		Type:   o.typ,
-		Bucket: o.bucket,
-		Key:    o.key,
+		Type:       o.typ,
+		Bucket:     o.bucket,
+		Key:        o.key,
+		Timeout:    o.timeout,
+		IfModified: o.ifModified,
+		Head:       o.head,
 	}
 
 	req, err := marshalRPB(rpbGetReqCode, rpbReq)

@@ -26,7 +26,7 @@ func unmarshalRPB(data []byte, code byte, pm proto.Message) error {
 	}
 
 	if data[0] != code {
-		return fmt.Errorf("invalid rpb code: expected %s, got %s", code, data[0])
+		return fmt.Errorf("invalid rpb code: expected %v, got %v", code, data[0])
 	}
 
 	return proto.Unmarshal(data[1:], pm)

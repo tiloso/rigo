@@ -64,7 +64,7 @@ func (c *session) readResponse() ([]byte, error) {
 	}
 
 	if count != 4 {
-		return nil, fmt.Errorf("read bytes (%s) and expected length (%s) don't match\n", count, 4)
+		return nil, fmt.Errorf("read bytes (%v) and expected length (%v) don't match\n", count, 4)
 	}
 
 	var size int32

@@ -27,22 +27,22 @@ func (o *Object) setIfModified(v []byte) {
 }
 
 // type ObjectSetter func(*Object) *Object
-func (o *Object) Vclock(v []byte) *Object {
+func (o *Object) SetVclock(v []byte) *Object {
 	o.vclock = v
 	return o
 }
 
-func (o *Object) Indexes(v []KVPair) *Object {
+func (o *Object) SetIndexes(v []KVPair) *Object {
 	o.indexes = v
 	return o
 }
 
-func (o *Object) ContentType(v []byte) *Object {
+func (o *Object) SetContentType(v []byte) *Object {
 	o.contentType = v
 	return o
 }
 
-func (o *Object) ContentEncoding(v []byte) *Object {
+func (o *Object) SetContentEncoding(v []byte) *Object {
 	o.contentEncoding = v
 	return o
 }

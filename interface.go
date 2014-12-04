@@ -89,13 +89,13 @@ func (b *Bucket) DeleteI(v Keyer) error {
 	o := b.K(v.Key())
 
 	if vc, ok := v.(Vclocker); ok {
-		o.Vclock(vc.Vclock())
+		o.SetVclock(vc.Vclock())
 	}
 
 	return o.Delete()
 }
 
-func (b *Bucket) StoreI(v Interface) error {
+func (b *Bucket) StoreI(v interface{}) error {
 	om, err := json.Marshal(v)
 	if err != nil {
 		return fmt.Errorf("rigo: %v", err)
@@ -110,14 +110,14 @@ func (b *Bucket) StoreI(v Interface) error {
 	o := b.K(k)
 
 	if i, ok := v.(Vclocker); ok {
-		o.Vclock(i.Vclock())
+		o.SetVclock(i.Vclock())
 	}
 
 	if i, ok := v.(Indexer); ok {
-		o.Indexes(i.Indexes())
+		o.SetIndexes(i.Indexes())
 	}
 
-	rpbRes, err := o.ContentType([]byte("application/json")).Store(om)
+	rpbRes, err := o.SetContentType([]byte("application/json")).Store(om)
 	if err != nil {
 		return err
 	}

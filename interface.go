@@ -2,16 +2,35 @@ package rigo
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"reflect"
 )
 
-// ObjectInterface instead?
 type Interface interface {
+	Keyer
+	KeySetter
+	Vclocker
+	VclockSetter
+	Indexer
+}
+
+type Keyer interface {
 	Key() []byte
+}
+
+type KeySetter interface {
 	SetKey([]byte)
+}
+
+type Vclocker interface {
 	Vclock() []byte
+}
+
+type VclockSetter interface {
 	SetVclock([]byte)
+}
+
+type Indexer interface {
 	Indexes() []KVPair
 }
 
@@ -19,10 +38,14 @@ type KVPair struct {
 	Key, Value []byte
 }
 
+// GetI fetches object and siblings from riak, unmarshals data into provided
+// interface and set the Key and Vector Clock on every element if they are type
+// of KeySetter / VclockSetter
+// It expects a pointer to a slice of the expected result type as argument
 func (o *Object) GetI(v interface{}) error {
 	resultv := reflect.ValueOf(v)
 	if resultv.Kind() != reflect.Ptr || resultv.Elem().Kind() != reflect.Slice {
-		panic("obj argument must be a slice address")
+		panic("rigo: obj argument must be a slice address")
 	}
 
 	slicev := resultv.Elem()
@@ -32,9 +55,6 @@ func (o *Object) GetI(v interface{}) error {
 	if err != nil {
 		return err
 	}
-	// TODO
-	// test if elemp.Elem().Interface() satisfices Interface interface first!
-	// return err / panic else
 
 	// method used by rgo might improve performance
 	// (set elemv at index of slicev, append and set len == cap if index > len)
@@ -45,17 +65,17 @@ func (o *Object) GetI(v interface{}) error {
 
 		if len(c.Value) > 0 {
 			if err := json.Unmarshal(c.Value, elemp.Interface()); err != nil {
-				return err
+				return fmt.Errorf("rigo: %v", err)
 			}
 		}
 
-		kv, ok := elemp.Elem().Interface().(Interface)
-		if !ok {
-			return errors.New("slice element doesn't implement interface rigo.Interface")
+		if i, ok := elemp.Elem().Interface().(KeySetter); ok {
+			i.SetKey(o.key)
 		}
 
-		kv.SetKey(o.key)
-		kv.SetVclock(rpbRes.GetVclock())
+		if i, ok := elemp.Elem().Interface().(VclockSetter); ok {
+			i.SetVclock(rpbRes.GetVclock())
+		}
 
 		slicev = reflect.Append(slicev, elemp.Elem())
 	}
@@ -63,29 +83,52 @@ func (o *Object) GetI(v interface{}) error {
 	return nil
 }
 
-func (b *Bucket) DeleteI(v Interface) error {
-	return b.K(v.Key()).Vclock(v.Vclock()).Delete()
+// The argument to DeleteI needs to satisfy Keyer interface. If it satisfies
+// the Vclocker interfaces aswell, rigo provides riak with a vector clock aswell
+func (b *Bucket) DeleteI(v Keyer) error {
+	o := b.K(v.Key())
+
+	if vc, ok := v.(Vclocker); ok {
+		o.Vclock(vc.Vclock())
+	}
+
+	return o.Delete()
 }
 
 func (b *Bucket) StoreI(v Interface) error {
 	om, err := json.Marshal(v)
 	if err != nil {
-		return err
+		return fmt.Errorf("rigo: %v", err)
 	}
 
-	rpbRes, err := b.K(v.Key()).
-		Vclock(v.Vclock()).
-		Indexes(v.Indexes()).
-		ContentType([]byte("application/json")).
-		Store(om)
+	var k []byte
+	kr, isKr := v.(Keyer)
+	if isKr {
+		k = kr.Key()
+	}
 
+	o := b.K(k)
+
+	if i, ok := v.(Vclocker); ok {
+		o.Vclock(i.Vclock())
+	}
+
+	if i, ok := v.(Indexer); ok {
+		o.Indexes(i.Indexes())
+	}
+
+	rpbRes, err := o.ContentType([]byte("application/json")).Store(om)
 	if err != nil {
 		return err
 	}
 
-	if v.Key() == nil {
-		v.SetKey(rpbRes.GetKey())
+	// set key if a key hasn't been provided and key is settable
+	if isKr && kr.Key() != nil {
+		return nil
 	}
 
+	if ks, ok := v.(KeySetter); ok {
+		ks.SetKey(rpbRes.GetKey())
+	}
 	return nil
 }

@@ -16,6 +16,7 @@ const (
 	rpbGetClientIDResCode = 4
 	rpbSetClientIDReqCode = 5
 	rpbSetClientIDResCode = 6
+
 	rpbGetReqCode         = 9
 	rpbGetResCode         = 10
 	rpbPutReqCode         = 11
@@ -26,6 +27,7 @@ const (
 	rpbListBucketsResCode = 16
 	rpbListKeysReqCode    = 17
 	rpbListKeysResCode    = 18
+
 	rpbIndexReqCode       = 25
 	rpbIndexResCode       = 26
 
@@ -38,68 +40,12 @@ const (
 	// RpbYokozunaIndexGetResp = 55
 	// RpbYokozunaIndexPutReq  = 56
 
-	// DtFetchReq   = 80
-	// DtFetchResp  = 81
-	// DtUpdateReq  = 82
-	// DtUpdateResp = 83
+	DtFetchReq  = 80
+	DtFetchRes  = 81
+	DtUpdateReq = 82
+	DtUpdateRes = 83
 )
 
 const unexpectedRPBResFormat = "unexpected rpb res len / code: expected 1 / %v, got %v / %v"
 
 var tval = true
-
-// difference => more structured, no siblings?
-// e.g. Update => DtOp CounterOp, SetOp, MapOp => Updates []*MapUpdate
-
-// What's the meaning of context??
-
-type Set struct {
-	context []byte
-}
-
-func (s *Set) Context(v []byte) *Set {
-	s.context = v
-	return s
-}
-
-// SetOp => Add / Remove
-// CounterOp => Increment
-// MapOp => Remove / Update
-
-func (s *Set) Add() error {
-	return nil
-}
-
-func (s *Set) Remove() error {
-	return nil
-}
-
-func (b *Bucket) S(v []byte) *Set {
-	return nil
-}
-
-type Map struct {
-}
-
-func (m *Map) Update() error {
-	return nil
-}
-
-func (m *Map) Delete() error {
-	return nil
-}
-
-func (b *Bucket) M(v []byte) *Map {
-	return nil
-}
-
-type Counter struct {
-}
-
-func (c *Counter) Increment() error {
-	return nil
-}
-
-func (b *Bucket) C(v []byte) *Counter {
-	return nil
-}

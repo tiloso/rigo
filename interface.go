@@ -39,8 +39,8 @@ type KVPair struct {
 }
 
 // GetI fetches object and siblings from riak, unmarshals data into provided
-// interface and set the Key and Vector Clock on every element if they are type
-// of KeySetter / VclockSetter
+// interface and sets the Key and Vector Clock on every element if they are of
+// type KeySetter / VclockSetter
 // It expects a pointer to a slice of the expected result type as argument
 func (o *Object) GetI(v interface{}) error {
 	resultv := reflect.ValueOf(v)
@@ -56,10 +56,6 @@ func (o *Object) GetI(v interface{}) error {
 		return err
 	}
 
-	// method used by rgo might improve performance
-	// (set elemv at index of slicev, append and set len == cap if index > len)
-	// https://github.com/go-mgo/mgo/blob/v2/session.go#L2817
-	// func (iter *Iter) All(v interface{}) error {...}
 	for _, c := range rpbRes.GetContent() {
 		elemp := reflect.New(elemt)
 
@@ -84,7 +80,7 @@ func (o *Object) GetI(v interface{}) error {
 }
 
 // The argument to DeleteI needs to satisfy Keyer interface. If it satisfies
-// the Vclocker interfaces aswell, rigo provides riak with a vector clock aswell
+// the Vclocker interfaces aswell, rigo provides riak with a vector clock
 func (b *Bucket) DeleteI(v Keyer) error {
 	o := b.K(v.Key())
 

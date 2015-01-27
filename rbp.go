@@ -51,7 +51,6 @@ func marshalRPB(code int, pm proto.Message) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-// merge with marshalRPB?
 func marshalRPBCode(code int) ([]byte, error) {
 	b := &bytes.Buffer{}
 	if err := binary.Write(b, binary.BigEndian, int32(1)); err != nil {

@@ -1,10 +1,7 @@
-// Package rigo implements a simple go interface for riak. Currently it
-// supports basic object and secondary index operations only. Furthermore the
-// it's not yet possible to specify request options
-//
-// How do we distinguish between options (quorom, d, dw,..) and non options
-// (Content-Type, ContentEncoding, ...) => query option <=> meta data which
-// will be stored with the object
+// Package rigo is an experimental Protocol Buffers based driver for riak.
+// Currently it supports basic object and secondary index operations only. Since
+// it's not tested and robust it shouldn't be used yet. Futhermore the API
+// will change a lot in future versions.
 package rigo
 
 // Riak Protocol Buffers message codes
@@ -28,8 +25,8 @@ const (
 	rpbListKeysReqCode    = 17
 	rpbListKeysResCode    = 18
 
-	rpbIndexReqCode       = 25
-	rpbIndexResCode       = 26
+	rpbIndexReqCode = 25
+	rpbIndexResCode = 26
 
 	// RpbCounterUpdateReq     = 50
 	// RpbCounterUpdateResp    = 51
@@ -40,10 +37,10 @@ const (
 	// RpbYokozunaIndexGetResp = 55
 	// RpbYokozunaIndexPutReq  = 56
 
-	DtFetchReq  = 80
-	DtFetchRes  = 81
-	DtUpdateReq = 82
-	DtUpdateRes = 83
+	// DtFetchReq  = 80
+	// DtFetchRes  = 81
+	// DtUpdateReq = 82
+	// DtUpdateRes = 83
 )
 
 const unexpectedRPBResFormat = "unexpected rpb res len / code: expected 1 / %v, got %v / %v"

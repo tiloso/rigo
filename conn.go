@@ -56,7 +56,7 @@ func (c *session) writeRequest(data []byte) error {
 }
 
 func (c *session) readResponse() ([]byte, error) {
-	// first 4 bytes are always size of message
+	// first 4 bytes are size of message
 	buf := bytes.NewBuffer(nil)
 	count, err := io.CopyN(buf, c.tc, 4)
 	if err != nil {

@@ -1,30 +1,14 @@
 package rigo
 
-// how to make it more general? e.g. specify each option on package level once
-// but allow to use for any element (e.g. Index, Bucket, ...)
-
-// use interfaces instead and test if type assertion works?
-
-// >> Rob's options / self referential functions
-// option sets the options specified.
-
-// idea embed rpb.Stuff in query step (e.g. Index) directly to avoid duplication
-// of Fields
-
-// example usage
-// I([]byte("key_bin")).Option(rigo.PaginationSort(true))
-
-// <<
-
 type option func(interface{})
 
-// How to group options in godoc without exporting option => option?
 func Timeout(v uint32) option {
 	return func(i interface{}) {
 		if t, ok := i.(timeouter); ok {
 			t.setTimeout(v)
 		}
-		// panic instead if !ok (e.g. user tries to set option on not supported entity?)
+		// TODO panic if !ok (e.g. user tries to set option on not supported
+		// entity?)
 	}
 }
 

@@ -20,10 +20,6 @@ func (i *Index) setMaxResults(v uint32) {
 	i.maxResults = &v
 }
 
-func (i *Index) setReturnTerms(v bool) {
-	i.returnTerms = &v
-}
-
 func (i *Index) setPaginationSort(v bool) {
 	i.paginationSort = &v
 }
@@ -33,13 +29,6 @@ func (i *Index) Option(opts ...option) *Index {
 		opt(i)
 	}
 	return i
-}
-
-type Query struct {
-	rpbReq     interface{}
-	rpbReqCode int
-	//rpbRes
-	//rpbResCode
 }
 
 func (i *Index) Key(k []byte) *Index {
@@ -53,24 +42,6 @@ func (i *Index) Key(k []byte) *Index {
 	}
 	return i
 }
-
-// don't return chan's but element with read method instead?
-// does the interface stuff work with sets etc. aswell?
-
-// different http api for crdts / datatypes => instead of /keys/123 => /datatypes/123
-// Counter => Int / Uint?
-// Set => Slice / Array
-// Maps => Struct / map
-//
-// maps are richest dataset => all other Data Types can be embedded within them,
-// including maps themselves,
-
-// datatypes are completely different => no default structs but slices / maps as
-// underlying data types and a variety of predefined operations on them
-// add / update / remove register (key, value)
-// add / remove counter => counter.increase / decrease....
-
-// use dvv instead of vclocks with riak datatypes!
 
 func (i *Index) Stream() (<-chan []byte, <-chan error) {
 	i.rpbReq.Stream = &tval
